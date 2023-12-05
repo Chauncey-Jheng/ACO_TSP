@@ -68,7 +68,7 @@ class ACO:
                     m -= self.city_count
                     n += 1
                 candidate[self.city_count*(n-1):self.ant_count, 0] = np.random.permutation(range(self.city_count))[:m]
-                length = np.zeros(self.ant_count)
+            length = np.zeros(self.ant_count)
             
             # select the path
             for i in range(self.ant_count):

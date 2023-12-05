@@ -8,7 +8,7 @@ def experiment_Chinese():
     city_name, city_pos, distance_table = city_data.get_Chinese_cities()
 
     # Load the model
-    aco = ACO(ant_count=200)
+    aco = ACO(ant_count=10000, use_CPUs=24)
     aco.input_data(city_pos, distance_table)
     path_best, distance_best = aco.serial_iteration("constant")
 
@@ -60,10 +60,18 @@ def experiment_serial(dataset:str, method:str, ant_count=100, alpha=1, beta=6, r
     plot.plot_dist(distance_best, "results\\"+ dataset +"ant_"+ method + "_distance_" +".png")
 
 if __name__ == "__main__":
-    experiment_Chinese()
+    # experiment_Chinese()
 
-    # datasets = ["oliver30","dantzig42","eil51","berlin52","st70","pr107","tsp225"]
-    # methods = ["quantity","density","cycle","constant"]
-    # for i in datasets:
-    #     for j in methods:
-    #         experiment_serial(i,j)
+    datasets = ["oliver30","dantzig42","eil51","berlin52","st70","pr107","tsp225"]
+    methods = ["quantity","density","cycle","constant"]
+    for i in datasets:
+        for j in methods:
+            if j == "quantity":
+                experiment_serial(i,j,alpha=1,beta=5,rho=0.9,Q=50)
+            if j == "density":
+                experiment_serial(i,j,alpha=1,beta=5,rho=0.9,Q=50)
+            if j == "cycle":
+                experiment_serial(i,j,alpha=1,beta=5,rho=0.5,Q=50)
+            if j == "constant":
+                experiment_serial(i,j,alpha=1,beta=4,rho=0.3,Q=50)
+            
