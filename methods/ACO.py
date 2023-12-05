@@ -2,7 +2,6 @@ import numpy as np
 from tqdm import tqdm
 from multiprocessing import Pool
 from multiprocessing import Array
-from multiprocessing import Manager
 import ctypes
 
 class ACO:
@@ -71,7 +70,7 @@ class ACO:
                 candidate[self.city_count*(n-1):self.ant_count, 0] = np.random.permutation(range(self.city_count))[:m]
                 length = np.zeros(self.ant_count)
             
-            # select the next city
+            # select the path
             for i in range(self.ant_count):
                 # remove the initial city
                 unvisit = list(range(self.city_count))
@@ -109,24 +108,24 @@ class ACO:
             # update the pheromone
             incre_pheromone = np.zeros((self.city_count, self.city_count))
             if method == "quantity":
-                for i in range(self.city_count):
+                for i in range(self.ant_count):
                     for j in range(self.city_count - 1):
                         incre_pheromone[candidate[i, j]][candidate[i, j+1]] += \
                             self.Q / self.distance_table[candidate[i, j]][candidate[i,j + 1]]
                     incre_pheromone[candidate[i, j+1]][candidate[i, 0]] += \
                         self.Q / self.distance_table[candidate[i, j+1]][candidate[i, 0]]
             elif method == "density":
-                for i in range(self.city_count):
+                for i in range(self.ant_count):
                     for j in range(self.city_count - 1):
                         incre_pheromone[candidate[i, j]][candidate[i, j+1]] += self.Q
                     incre_pheromone[candidate[i, j+1]][candidate[i, 0]] += self.Q
             elif method == "cycle":
-                for i in range(self.city_count):
+                for i in range(self.ant_count):
                     for j in range(self.city_count - 1):
                         incre_pheromone[candidate[i, j]][candidate[i, j+1]] += self.Q / length[i]
                     incre_pheromone[candidate[i, j+1]][candidate[i, 0]] += self.Q / length[i]
             elif method == "constant":
-                for i in range(self.city_count):
+                for i in range(self.ant_count):
                     for j in range(self.city_count - 1):
                         incre_pheromone[candidate[i, j]][candidate[i, j+1]] += \
                             self.distance_table[candidate[i, j]][candidate[i, j+1]] * self.Q / length[i]
@@ -231,27 +230,24 @@ class ACO:
             # update the pheromone
             incre_pheromone = np.zeros((self.city_count, self.city_count))
             if method == "quantity":
-                for i in range(self.city_count):
+                for i in range(self.ant_count):
                     for j in range(self.city_count - 1):
-                        # ant_cycle_system
                         incre_pheromone[candidate[i, j]][candidate[i, j + 1]] += \
                             self.Q / self.distance_table[candidate[i, j]][candidate[i,j + 1]]
                     incre_pheromone[candidate[i, j + 1]][candidate[i, 0]] += \
                         self.Q / self.distance_table[candidate[i, j + 1]][candidate[i, 0]]
             elif method == "density":
-                for i in range(self.city_count):
+                for i in range(self.ant_count):
                     for j in range(self.city_count - 1):
-                        # ant_cycle_system
                         incre_pheromone[candidate[i, j]][candidate[i, j + 1]] += self.Q
                     incre_pheromone[candidate[i, j + 1]][candidate[i, 0]] += self.Q
             elif method == "cycle":
-                for i in range(self.city_count):
+                for i in range(self.ant_count):
                     for j in range(self.city_count - 1):
-                        # ant_cycle_system
                         incre_pheromone[candidate[i, j]][candidate[i, j + 1]] += self.Q / length[i]
                     incre_pheromone[candidate[i, j + 1]][candidate[i, 0]] += self.Q / length[i]
             elif method == "constant":
-                for i in range(self.city_count):
+                for i in range(self.ant_count):
                     for j in range(self.city_count - 1):
                         incre_pheromone[candidate[i, j]][candidate[i, j+1]] += \
                             self.distance_table[candidate[i, j]][candidate[i, j+1]] * self.Q / length[i]
